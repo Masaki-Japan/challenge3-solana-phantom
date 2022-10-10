@@ -93,12 +93,55 @@ function App() {
     }
   };
 
+    /**
+   * @description prompts user to disconnect wallet if it exists.
+	 * This function is called when the disconnect wallet button is clicked
+   */
+
+  //disconnect phantom wallet
+  const disconnectWallet = async () => {
+    // @ts-ignore
+    const { solana } = window;
+    // checks if phantom wallet exists
+    if (solana) {
+      try {
+        // connects wallet and returns response which includes the wallet public key
+        await solana.disconnect();
+        console.log('disconnected wallet successfully:');
+
+        // update walletKey
+        setWalletKey(undefined);
+      } catch (err) {
+        // { code: 4001, message: 'User rejected the request.' }
+      }
+    }
+  }
+
 	// HTML code for the app
   return (
     <div className="App">
       <header className="App-header">
         <h2>Connect to Phantom Wallet</h2>
       </header>
+
+      {provider && walletKey && (
+        <div style={{position:"absolute", top: "0", right: "1%",}}>
+
+          <p style={{color:"white"}}>Connected account: {walletKey.toString()}</p>
+          <button
+            style={{
+              fontSize: "16px",
+              padding: "15px",
+              fontWeight: "bold",
+              borderRadius: "5px",
+            }}
+            onClick={disconnectWallet}
+          >
+            Disconnect Wallet
+          </button>          
+        </div>
+      )}
+
       {provider && !walletKey && (
           <button
             style={{
@@ -112,7 +155,6 @@ function App() {
             Connect Wallet
           </button>
         )}
-        {provider && walletKey && <p>Connected account</p> }
 
         {!provider && (
           <p>
@@ -125,32 +167,3 @@ function App() {
 }
 
 export default App;
-
-
-
-// import React from 'react';
-// import logo from './logo.svg';
-// import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.tsx</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
